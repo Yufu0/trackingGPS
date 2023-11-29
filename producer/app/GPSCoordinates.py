@@ -58,5 +58,5 @@ class GPSTracker:
         self.direction += self.angular_speed * delta.seconds
 
         # Update acceleration and angular speed
-        self.acceleration += np.random.normal(0, 0.01)
-        self.angular_speed += np.random.normal(0, 0.01)
+        self.acceleration += np.random.normal(0, 0.001)
+        self.angular_speed += np.random.normal(0, 0.001)
