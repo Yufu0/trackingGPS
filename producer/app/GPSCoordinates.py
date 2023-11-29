@@ -50,17 +50,13 @@ class GPSTracker:
 
 
         # Update GPS coordinates
-        self.gps_coordinates.longitude += self.speed * delta.microseconds * np.cos(self.direction)
-        self.gps_coordinates.latitude += self.speed * delta.microseconds * np.sin(self.direction)
+        self.gps_coordinates.longitude += self.speed * delta.seconds * np.cos(self.direction)
+        self.gps_coordinates.latitude += self.speed * delta.seconds * np.sin(self.direction)
 
         # Update speed and direction
-        self.speed += self.acceleration * delta.microseconds
-        self.direction += self.angular_speed * delta.microseconds
+        self.speed += self.acceleration * delta.seconds
+        self.direction += self.angular_speed * delta.seconds
 
         # Update acceleration and angular speed
         self.acceleration += np.random.normal(0, 0.01)
         self.angular_speed += np.random.normal(0, 0.01)
-        print("acceleration", self.acceleration)
-        print("angular_speed", self.angular_speed)
-
-
