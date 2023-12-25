@@ -38,18 +38,21 @@ export class WebsocketService {
             return;
         }
         this.webSocket.onmessage = (event) => {
-            const position: IPosition = JSON.parse(event.data);
-            const index: number = this.listPositions.findIndex((element: IPosition) => element.name === position.name);
-            if(index === -1) {
-                position.color = Math.floor(Math.random() * 15);
-                this.listPositions.push(position);
-            }
-            else {
-                position.color = this.listPositions[index].color;
-                this.listPositions[index] = position;
-            }
+            const positions: Array<IPosition> = JSON.parse(event.data);
+            positions.forEach((position: IPosition) => {
+                const index: number = this.listPositions.findIndex((element: IPosition) => element.name === position.name);
+                if(index === -1) {
+                    position.color = Math.floor(Math.random() * 15);
+                    this.listPositions.push(position);
+                }
+                else {
+                    position.color = this.listPositions[index].color;
+                    this.listPositions[index] = position;
+                }
 
-            this.listPositionsSubject.next(this.listPositions);
+                this.listPositionsSubject.next(this.listPositions);
+            });
+
         }
     }
 }
