@@ -1,6 +1,7 @@
 import {Injectable} from '@angular/core';
 import {Observable, Subject} from "rxjs";
 import {IPosition} from "../model/IPosition";
+import {NumberIcons} from "../model/Icons";
 
 @Injectable({
     providedIn: 'root'
@@ -12,8 +13,6 @@ export class WebsocketService {
     public listPositions$: Observable<Array<IPosition>> = this.listPositionsSubject.asObservable();
 
     private webSocket?: WebSocket;
-
-    constructor() {}
 
     openWebSocket(): void {
         this.webSocket = new WebSocket('ws://localhost:8080/gps');
@@ -38,21 +37,28 @@ export class WebsocketService {
             return;
         }
         this.webSocket.onmessage = (event) => {
-            const positions: Array<IPosition> = JSON.parse(event.data);
-            positions.forEach((position: IPosition) => {
-                const index: number = this.listPositions.findIndex((element: IPosition) => element.name === position.name);
-                if(index === -1) {
-                    position.color = Math.floor(Math.random() * 15);
-                    this.listPositions.push(position);
-                }
-                else {
-                    position.color = this.listPositions[index].color;
-                    this.listPositions[index] = position;
-                }
+            const data = JSON.parse(event.data);
 
+            if(data instanceof Array) {
+                const positions: Array<IPosition> = data as Array<IPosition>;
+                positions.forEach((position: IPosition) => this.computeListPositions(position));
                 this.listPositionsSubject.next(this.listPositions);
-            });
+            } else {
+                this.computeListPositions(data as IPosition);
+                this.listPositionsSubject.next(this.listPositions);
+            }
+        }
+    }
 
+    private computeListPositions(position: IPosition): void {
+        const index: number = this.listPositions.findIndex((element: IPosition) => element.name === position.name);
+        if(index === -1) {
+            position.color = Math.floor(Math.random() * NumberIcons);
+            this.listPositions.push(position);
+        }
+        else {
+            position.color = this.listPositions[index].color;
+            this.listPositions[index] = position;
         }
     }
 }
