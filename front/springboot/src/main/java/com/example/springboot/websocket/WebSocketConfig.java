@@ -1,6 +1,8 @@
 package com.example.springboot.websocket;
 
 
+import com.example.springboot.repository.GPSTrackerRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.socket.WebSocketHandler;
@@ -12,13 +14,16 @@ import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry
 @EnableWebSocket
 public class WebSocketConfig implements WebSocketConfigurer {
 
+    @Autowired
+    private GPSTrackerRepository gpsTrackerRepository;
+
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
-        registry.addHandler(new GPSWebSocketHandler(), "/gps").setAllowedOrigins("*");
+        registry.addHandler(new GPSWebSocketHandler(gpsTrackerRepository), "/gps").setAllowedOrigins("*");
     }
 
     @Bean
     public WebSocketHandler gpsWebSocketHandler() {
-        return new GPSWebSocketHandler();
+        return new GPSWebSocketHandler(gpsTrackerRepository);
     }
 }

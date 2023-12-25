@@ -1,6 +1,7 @@
 package com.example.springboot.websocket;
 
 import com.example.springboot.models.GPSTracker;
+import com.example.springboot.repository.GPSTrackerRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
@@ -16,13 +17,20 @@ public class GPSWebSocketHandler extends TextWebSocketHandler {
     private final List<String> sessions = new ArrayList<>();
 
     private final List<String> fakeGPSNames = List.of("Alice", "Bob", "Charlie", "Dave", "Eve");
+
+    private final GPSTrackerRepository gpsTrackerRepository;
+    public GPSWebSocketHandler(GPSTrackerRepository gpsTrackerRepository) {
+        this.gpsTrackerRepository = gpsTrackerRepository;
+    }
+
     @Override
     public void afterConnectionEstablished(WebSocketSession session) {
         System.out.println("Connection established");
         sessions.add(session.getId());
         while (sessions.contains(session.getId())) {
             try {
-                session.sendMessage(new TextMessage(objectMapper.writeValueAsString(fakeGPSData())));
+                System.out.println(this.gpsTrackerRepository.findLatestGPSData());
+                session.sendMessage(new TextMessage(objectMapper.writeValueAsString(this.gpsTrackerRepository.findLatestGPSData())));
                 Thread.sleep(1000);
             } catch (Exception e) {
                 e.printStackTrace();
