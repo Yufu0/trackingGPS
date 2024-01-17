@@ -1,4 +1,3 @@
-import asyncio
 import os
 import time
 
@@ -18,7 +17,7 @@ async def main_loop():
     conf = {
         'kafka_host': os.environ.get('KAFKA_HOST'),
         'client_id': os.environ.get('HOSTNAME'),
-        'topic': os.environ.get('TOPIC'),
+        'topic': os.environ.get('KAFKA_TOPIC'),
     }
     producer = ProducerInterface(conf)
     logging.info('Starting up GPS tracker')
@@ -33,4 +32,4 @@ async def main_loop():
         }
         producer.produce(data)
         logging.info(f"SEND {data}")
-        time.sleep(0.33)
+        time.sleep(0.1)
