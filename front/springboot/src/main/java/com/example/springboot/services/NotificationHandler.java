@@ -30,7 +30,7 @@ public class NotificationHandler implements Consumer<PGNotification> {
     @Override
     public void accept(PGNotification t) {
         log.info("Notification received: pid={}, name={}, param={}",t.getPID(),t.getName(),t.getParameter());
-        Optional<GPSTracker> gpsTrackerOptional = gpsTrackerService.findById(Long.valueOf(t.getParameter()));
+        Optional<GPSTracker> gpsTrackerOptional = gpsTrackerService.findById(t.getParameter());
         gpsTrackerOptional.ifPresent(gpsTracker -> {
             GPSWebSocketHandler.getSessions().forEach(session -> {
                 try {

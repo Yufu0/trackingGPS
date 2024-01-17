@@ -24,7 +24,7 @@ public class GPSTrackerService {
     }
 
     @Transactional(readOnly = true)
-    public Optional<GPSTracker> findById(Long id) {
+    public Optional<GPSTracker> findById(String id) {
         Optional<GPSTracker> o = Optional.ofNullable(gpsTrackerCache.get(id, GPSTracker.class));
         if ( o.isPresent() ) {
             log.info("findById: cache hit, id={}",id);

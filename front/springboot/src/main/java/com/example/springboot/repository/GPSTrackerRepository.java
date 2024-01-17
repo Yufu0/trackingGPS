@@ -8,8 +8,8 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface GPSTrackerRepository extends JpaRepository<GPSTracker, Long> {
+public interface GPSTrackerRepository extends JpaRepository<GPSTracker, String> {
 
-    @Query(value = "select distinct on (index_tracker_pkey) * from item_tracker order by index_tracker_pkey, datetime desc;", nativeQuery = true)
+    @Query(value = "select distinct on (name) * from item_tracker order by name, datetime desc;", nativeQuery = true)
     List<GPSTracker> findLatestGPSData();
 }

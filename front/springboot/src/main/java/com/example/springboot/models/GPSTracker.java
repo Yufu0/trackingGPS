@@ -14,9 +14,9 @@ import java.sql.Timestamp;
 public class GPSTracker {
 
     @Id
-    private Long id;
+    private String id;
 
-    @Column(name = "index_tracker_pkey")
+    @Column(name = "name")
     private String name;
 
     @Column(name = "latitude")

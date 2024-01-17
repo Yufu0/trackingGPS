@@ -19,8 +19,6 @@ public class GPSWebSocketHandler extends TextWebSocketHandler {
     @Getter
     private static final List<WebSocketSession> sessions = new CopyOnWriteArrayList<>();
 
-    private final List<String> fakeGPSNames = List.of("Alice", "Bob", "Charlie", "Dave", "Eve");
-
     private final GPSTrackerRepository gpsTrackerRepository;
     public GPSWebSocketHandler(GPSTrackerRepository gpsTrackerRepository) {
         this.gpsTrackerRepository = gpsTrackerRepository;
