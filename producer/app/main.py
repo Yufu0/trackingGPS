@@ -1,6 +1,6 @@
 import asyncio
 import os
-import random
+import time
 
 from fastapi import FastAPI
 from ProducerInterface import ProducerInterface
@@ -29,8 +29,8 @@ async def main_loop():
                 "id": conf['client_id'],
                 "longitude": gps_tracker.get_gps_coordinates().longitude,
                 "latitude": gps_tracker.get_gps_coordinates().latitude,
-                "date": int(gps_tracker.datetime.timestamp() * 1000),
-            }
+                "date": int(gps_tracker.datetime.timestamp() * 1_000),
+        }
         producer.produce(data)
         logging.info(f"SEND {data}")
-        await asyncio.sleep(1)
+        time.sleep(0.33)
