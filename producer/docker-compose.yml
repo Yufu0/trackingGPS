@@ -4,7 +4,6 @@ services:
     build: .
     environment:
       KAFKA_HOST: 172.17.9.221:29093
-      CLIENT_ID: <container_name>
       TOPIC: coordinates
     deploy:
       mode: replicated
