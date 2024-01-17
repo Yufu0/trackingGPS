@@ -34,23 +34,27 @@ export class MapComponent implements AfterViewInit {
 
         this.webSocketService.listPositions$.subscribe({
             next: (positions: Array<IPosition>) => {
+                positions.forEach((position: IPosition) => {
+                    if(position.layer === undefined) {
+                        const marker = L.marker([position.latitude, position.longitude], {icon: icons[position.color]}).bindPopup(position.name);
+                        marker.on('mouseover', function (e) {
+                            // @ts-ignore
+                            this.openPopup();
+                        });
+                        marker.on('mouseout', function (e) {
+                            // @ts-ignore
+                            this.closePopup();
+                        });
 
-                this.map.eachLayer((layer: any) => {
-                    if (layer instanceof L.Marker)
-                        layer.remove();
-                });
+                        marker.addTo(this.map);
 
-                positions.forEach((position: any) => {
-                    const marker = L.marker([position.latitude, position.longitude], {icon: icons[position.color]}).bindPopup(position.name);
-                    marker.on('mouseover', function (e) {
-                        // @ts-ignore
-                        this.openPopup();
-                    });
-                    marker.on('mouseout', function (e) {
-                        // @ts-ignore
-                        this.closePopup();
-                    });
-                    marker.addTo(this.map);
+                        const index = this.webSocketService.listPositionsMemory.findIndex((element: IPosition) => element.name === position.name);
+                        if(index !== -1) {
+                            this.webSocketService.listPositionsMemory[index].layer = marker;
+                        }
+                    } else {
+                       position.layer.setLatLng([position.latitude, position.longitude]);
+                    }
                 });
             }
         });

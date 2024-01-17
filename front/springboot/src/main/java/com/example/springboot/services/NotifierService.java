@@ -16,7 +16,7 @@ public class NotifierService {
     private static final String GPS_TRACKER_CHANNEL = "tracker_channel";
     private final JdbcTemplate tpl;
 
-    public Runnable createNotificationHandler(Consumer<PGNotification> consumer) {
+    public Runnable createNotificationHandler(Consumer<PGNotification[]> consumer) {
 
         return () ->
             tpl.execute((Connection c) -> {
@@ -27,11 +27,11 @@ public class NotifierService {
 
                 while(!Thread.currentThread().isInterrupted()) {
                     PGNotification[] nts = pgconn.getNotifications();
-                    if (nts == null)
+                    if (nts == null || nts.length == 0)
                         continue;
+                    consumer.accept(nts);
 
-                    for( PGNotification nt : nts)
-                        consumer.accept(nt);
+//                    for( PGNotification nt : nts)
                 }
 
                 return 0;

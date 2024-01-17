@@ -1,10 +1,12 @@
 package com.example.springboot.models;
-import jakarta.persistence.*;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-
-import java.sql.Timestamp;
 
 @Entity
 @Table(name = "item_tracker")
@@ -26,5 +28,5 @@ public class GPSTracker {
     private Double longitude;
 
     @Column(name = "datetime")
-    private Timestamp datetime;
+    private Long     datetime;
 }

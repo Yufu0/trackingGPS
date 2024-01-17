@@ -30,7 +30,9 @@ public class GPSWebSocketHandler extends TextWebSocketHandler {
         sessions.add(session);
 
         try {
-            session.sendMessage(new TextMessage(objectMapper.writeValueAsString(gpsTrackerRepository.findAll())));
+            synchronized(session) {
+                session.sendMessage(new TextMessage(objectMapper.writeValueAsString(gpsTrackerRepository.findLatestGPSData())));
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }

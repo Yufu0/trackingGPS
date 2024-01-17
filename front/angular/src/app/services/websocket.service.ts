@@ -12,6 +12,8 @@ export class WebsocketService {
     private listPositionsSubject: Subject<Array<IPosition>> = new Subject<Array<IPosition>>();
     public listPositions$: Observable<Array<IPosition>> = this.listPositionsSubject.asObservable();
 
+    public listPositionsMemory: Array<IPosition> = new Array<IPosition>();
+
     private webSocket?: WebSocket;
 
     openWebSocket(): void {
@@ -39,26 +41,32 @@ export class WebsocketService {
         this.webSocket.onmessage = (event) => {
             const data = JSON.parse(event.data);
 
+            this.listPositions = [];
+
             if(data instanceof Array) {
                 const positions: Array<IPosition> = data as Array<IPosition>;
-                positions.forEach((position: IPosition) => this.computeListPositions(position));
+                positions.forEach((position: IPosition) => this.listPositions.push(this.computeListPositions(position)));
                 this.listPositionsSubject.next(this.listPositions);
             } else {
+                console.error("Data is not an array.");
                 this.computeListPositions(data as IPosition);
+                this.listPositions.push(data as IPosition);
                 this.listPositionsSubject.next(this.listPositions);
             }
         }
     }
 
-    private computeListPositions(position: IPosition): void {
-        const index: number = this.listPositions.findIndex((element: IPosition) => element.name === position.name);
+    private computeListPositions(position: IPosition): IPosition {
+        const index: number = this.listPositionsMemory.findIndex((element: IPosition) => element.name === position.name);
         if(index === -1) {
             position.color = Math.floor(Math.random() * NumberIcons);
-            this.listPositions.push(position);
+            position.layer = undefined;
+            this.listPositionsMemory.push(position);
+        } else {
+            position.color = this.listPositionsMemory[index].color;
+            position.layer = this.listPositionsMemory[index].layer;
+            this.listPositionsMemory[index] = position;
         }
-        else {
-            position.color = this.listPositions[index].color;
-            this.listPositions[index] = position;
-        }
+        return position;
     }
 }

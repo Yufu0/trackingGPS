@@ -1,3 +1,5 @@
+import * as L from "leaflet";
+
 export interface IPosition {
     id: number;
     name: string;
@@ -5,4 +7,5 @@ export interface IPosition {
     longitude: number;
     timestamp: Date;
     color: number;
+    layer?: L.Marker;
 }
