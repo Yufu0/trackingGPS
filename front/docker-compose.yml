@@ -1,0 +1,20 @@
+version: '3'
+services:
+    angular:
+        build: ./angular
+        container_name: angular
+        ports:
+            - "4200:4200"
+        networks:
+            - front-net
+
+    springboot:
+        build: ./springboot
+        container_name: springboot
+        ports:
+            - "8080:8080"
+        networks:
+            - front-net
+
+networks:
+    front-net:
