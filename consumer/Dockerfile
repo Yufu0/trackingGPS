@@ -6,4 +6,6 @@ COPY ./Cargo.toml ./
 
 COPY ./src ./src
 
-RUN cargo run
+COPY ./.env ./
+RUN cargo build
+CMD ["cargo", "run"]
