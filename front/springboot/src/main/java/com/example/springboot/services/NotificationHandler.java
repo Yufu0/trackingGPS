@@ -32,7 +32,9 @@ public class NotificationHandler implements Consumer<PGNotification[]> {
             String s = objectMapper.writeValueAsString(gpsTrackerRepository.findAllById(Arrays.stream(notifications).map(PGNotification::getParameter).toList()));
             GPSWebSocketHandler.getSessions().forEach(session -> {
                 try {
-                    session.sendMessage(new TextMessage(s));
+                    synchronized(session) {
+                        session.sendMessage(new TextMessage(s));
+                    }
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }

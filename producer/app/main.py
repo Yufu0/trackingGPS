@@ -32,4 +32,4 @@ async def main_loop():
         }
         producer.produce(data)
         logging.info(f"SEND {data}")
-        time.sleep(0.1)
+        time.sleep(0.33)

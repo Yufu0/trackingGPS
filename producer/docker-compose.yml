@@ -6,4 +6,4 @@ services:
             - .env
         deploy:
             mode: replicated
-            replicas: 1
+            replicas: 30
