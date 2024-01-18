@@ -2,9 +2,8 @@ version: '3'
 services:
     producer:
         build: .
-        environment:
-            - KAFKA_HOST=172.17.9.221:29093
-            - KAFKA_TOPIC=coordinates
+        env_file:
+            - .env
         deploy:
             mode: replicated
-            replicas: 10
+            replicas: 1
