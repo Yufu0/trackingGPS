@@ -14,9 +14,9 @@ services:
         ports:
             - "8080:8080"
         environment:
-            - 'SPRING_DATASOURCE_URL=jdbc:postgresql://192.168.1.18:5432/tracker'
-            - 'SPRING_DATASOURCE_USERNAME=postgres'
-            - 'SPRING_DATASOURCE_PASSWORD=postgres'
+            - 'SPRING_DATASOURCE_URL=jdbc:postgresql://${DB_HOST}/${DB_NAME}'
+            - 'SPRING_DATASOURCE_USERNAME=${DB_USER}'
+            - 'SPRING_DATASOURCE_PASSWORD=${DB_PASSWORD}'
         networks:
             - front-net
 
