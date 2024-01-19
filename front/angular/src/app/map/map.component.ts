@@ -3,6 +3,7 @@ import * as L from 'leaflet';
 import {WebsocketService} from "../services/websocket.service";
 import {IPosition} from "../model/IPosition";
 import {icons} from "../model/Icons";
+import {Map} from "leaflet";
 
 @Component({
   selector: 'app-map',
@@ -11,7 +12,7 @@ import {icons} from "../model/Icons";
 })
 export class MapComponent implements AfterViewInit {
 
-    private map: any;
+    private map!: Map;
 
     constructor(private webSocketService: WebsocketService) { }
 
@@ -49,12 +50,10 @@ export class MapComponent implements AfterViewInit {
                         marker.addTo(this.map);
 
                         const index = this.webSocketService.listPositionsMemory.findIndex((element: IPosition) => element.name === position.name);
-                        if(index !== -1) {
+                        if(index !== -1)
                             this.webSocketService.listPositionsMemory[index].layer = marker;
-                        }
-                    } else {
+                    } else
                        position.layer.setLatLng([position.latitude, position.longitude]);
-                    }
                 });
             }
         });
