@@ -43,16 +43,9 @@ export class WebsocketService {
 
             this.listPositions = [];
 
-            if(data instanceof Array) {
-                const positions: Array<IPosition> = data as Array<IPosition>;
-                positions.forEach((position: IPosition) => this.listPositions.push(this.computeListPositions(position)));
-                this.listPositionsSubject.next(this.listPositions);
-            } else {
-                console.error("Data is not an array.");
-                this.computeListPositions(data as IPosition);
-                this.listPositions.push(data as IPosition);
-                this.listPositionsSubject.next(this.listPositions);
-            }
+            const positions: Array<IPosition> = data as Array<IPosition>;
+            positions.forEach((position: IPosition) => this.listPositions.push(this.computeListPositions(position)));
+            this.listPositionsSubject.next(this.listPositions);
         }
     }
 
