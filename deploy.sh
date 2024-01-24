@@ -1,0 +1,1 @@
+xargs -n 1 cp -v .env<<<"./kafka/ ./consumer/ ./front/ ./producer/"
