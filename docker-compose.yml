@@ -1,0 +1,92 @@
+version: '3'
+services:
+    zookeeper:
+        image: wurstmeister/zookeeper
+        container_name: zookeeper
+        ports:
+            - "2181:2181"
+        networks:
+            - kafka-net
+    kafka:
+        image: wurstmeister/kafka
+        container_name: kafka
+        ports:
+            - "29092:29092"
+            - "29093:29093"
+        environment:
+            KAFKA_LISTENERS: INTERNAL://:9092,EXTERNAL_SAME_HOST://:29092,EXTERNAL_DIFFERENT_HOST://:29093,
+            KAFKA_ADVERTISED_LISTENERS: INTERNAL://kafka:9092,EXTERNAL_SAME_HOST://localhost:29092,EXTERNAL_DIFFERENT_HOST://${KAFKA_HOST}
+            KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT,EXTERNAL_SAME_HOST:PLAINTEXT,EXTERNAL_DIFFERENT_HOST:PLAINTEXT
+            KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
+            KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+            KAFKA_CREATE_TOPICS: "coordinates:1:1"
+        networks:
+            - kafka-net
+        depends_on:
+            - zookeeper
+
+    postgres:
+        build:
+            context: ./consumer/db/
+            dockerfile: Dockerfile
+        ports:
+            - "5432:5432"
+        environment:
+            POSTGRES_USER: ${DB_USER}
+            POSTGRES_PASSWORD: ${DB_PASSWORD}
+            POSTGRES_DB: ${DB_NAME}
+
+    producer:
+        build: ./producer/
+        env_file:
+            - .env
+        deploy:
+            mode: replicated
+            replicas: 30
+        depends_on:
+            - kafka
+
+    rust-app:
+        build:
+            context: ./consumer/
+            dockerfile: Dockerfile
+        env_file:
+            - .env
+        depends_on:
+            - kafka
+            - postgres
+            - zookeeper
+            - producer
+            - springboot
+
+    springboot:
+        build: ./front/springboot/
+        container_name: springboot
+        ports:
+            - "8080:8080"
+        environment:
+            - 'SPRING_DATASOURCE_URL=jdbc:postgresql://${DB_HOST}/${DB_NAME}'
+            - 'SPRING_DATASOURCE_USERNAME=${DB_USER}'
+            - 'SPRING_DATASOURCE_PASSWORD=${DB_PASSWORD}'
+        networks:
+            - front-net
+        depends_on:
+            - postgres
+
+    angular:
+        build: ./front/angular/
+        container_name: angular
+        ports:
+            - "4200:4200"
+        networks:
+            - front-net
+        depends_on:
+            - postgres
+            - springboot
+
+networks:
+    kafka-net:
+        name: kafka-net
+        driver: bridge
+    front-net:
+
