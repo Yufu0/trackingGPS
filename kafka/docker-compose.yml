@@ -26,6 +26,5 @@ services:
       - zookeeper
 networks:
   kafka-net:
-    name: kafka-net
     driver: bridge
 
