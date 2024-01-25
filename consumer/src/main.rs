@@ -6,6 +6,7 @@ use kafka::consumer::{Consumer, FetchOffset, GroupOffsetStorage};
 use tokio_postgres::tls::NoTlsStream;
 use uuid::Uuid;
 use chrono::{NaiveDateTime, TimeZone, Utc};
+use std::{thread, time};
 
 #[derive(Deserialize,Debug)]
 struct Coordonnees {
@@ -55,6 +56,9 @@ async fn main() {
         }
     });
 
+    // Wait 5 seconds to be sure that the connection is established
+    let five_seconds = time::Duration::from_secs(5);
+    thread::sleep(five_seconds);
 
     let mut consumer =
         Consumer::from_hosts(vec!(kafkahost.to_owned()))
