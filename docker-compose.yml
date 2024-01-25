@@ -53,11 +53,11 @@ services:
         env_file:
             - .env
         depends_on:
+            - zookeeper
+            - springboot
             - kafka
             - postgres
-            - zookeeper
             - producer
-            - springboot
 
     springboot:
         build: ./front/springboot/
@@ -81,12 +81,11 @@ services:
         networks:
             - front-net
         depends_on:
-            - postgres
             - springboot
+            - postgres
 
 networks:
     kafka-net:
-        name: kafka-net
         driver: bridge
     front-net:
 
